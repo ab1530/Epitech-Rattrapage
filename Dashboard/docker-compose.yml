@@ -1,0 +1,34 @@
+version: '3.3'
+services:
+  db:
+        image: mongo
+        restart: always
+        volumes:
+            - data-volume:/data/db
+        environment:
+            MONGO_INITDB_DATABASE: fullauth
+        ports:
+            - "27017:27017"
+  server:
+    build:
+      context: ./server
+    command: npm start
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+  dahsboard:
+    build:
+      context: ./authdash
+    command: npm start
+    ports:
+      - "8081:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+networks:
+  nodeapp-network:
+    driver: bridge
+volumes:
+ data-volume:
